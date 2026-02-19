@@ -1,127 +1,60 @@
-# Cookies-KMP
+# DuckDuckGo Cookies KMP POC
 
-This repository is an **undergraduate thesis (TCC) academic project** whose goal is to design and validate a **Kotlin Multiplatform (KMP) library** based on the **Cookies module** of the DuckDuckGo mobile applications.
+## Why this project exists
+This project exists to test whether the DuckDuckGo Android cookies feature can be extracted into a Kotlin Multiplatform (KMP) core and reused by both Android and iOS while keeping native platform integrations.
 
-> ⚠️ Academic Disclaimer  
-> This project is **strictly academic** and **not affiliated, endorsed, or maintained by DuckDuckGo**.  
-> All analysis, experiments, and code adaptations are conducted **for research and educational purposes only**, using publicly available open-source repositories.
+This is a **college study case / proof of concept**, not an official DuckDuckGo initiative.
 
----
+## Business case in one sentence
+If policy and feature logic are shared once in KMP and only platform adapters stay native, cross-platform effort should decrease without losing native behavior where platform internals differ.
 
-## Project Focus
+## What success looks like
+- Shared logic lives in `commonMain` and is consumed from Android and iOS.
+- Android behavior remains functionally equivalent after migration.
+- iOS can implement equivalent behavior through platform adapters.
+- Future cookies policy changes are implemented once in shared code.
 
-The scope of this project is intentionally **narrow and well-defined**:
+## What is in scope
+- Cookies feature config parsing and storage orchestration.
+- Feature-toggle evaluation.
+- Third-party cookie name matching logic.
+- Shared utility logic (for example stacktrace redaction/base64 behavior).
 
-- Build a **KMP library** that encapsulates **cookie-related logic**
-- Enable reuse of this shared logic across:
-  - DuckDuckGo Android
-  - DuckDuckGo iOS (Apple Browsers)
-- Evaluate the feasibility, constraints, and benefits of adopting KMP **as a shared library**, not as a full app rewrite
+## What is out of scope
+- Forcing identical low-level DB/WebView implementation across platforms.
+- Replacing native platform cookie APIs.
+- Full app-wide migration in one step.
 
----
+## Current structure
+- `cookies-kmp-core/src/commonMain`: shared cookies domain logic.
+- `cookies-kmp-core/src/androidMain`: Android actuals/adapters.
+- `cookies-kmp-core/src/iosMain`: iOS actual placeholders/adapters.
+- `cookies-kmp-core/src/commonTest`: shared logic tests.
 
-## Objectives
+## Integration model
+This KMP project is included from the Android repo as a composite build and consumed as:
+- `com.duckduckgo.cookies:cookies-kmp-core:0.1.0-SNAPSHOT`
 
-1. **Set up and run the target projects**
-   - DuckDuckGo Android
-   - DuckDuckGo iOS/macOS
-2. **Analyze the Cookies module**
-   - Understand responsibilities, boundaries, and dependencies
-   - Identify what can be safely shared across platforms
-3. **Implement a KMP Cookies library**
-   - Shared business logic in `commonMain`
-   - Platform-specific implementations via `expect/actual` where needed
-4. **Validate iOS integration**
-   - Confirm that the iOS platform can consume the KMP library through a published artifact
-5. **Document results**
-   - Technical decisions
-   - Limitations
-   - Integration experience
+## Current status
+- KMP core created and wired to Android cookies modules.
+- Android wrappers now delegate selected business logic to KMP core.
+- Android unit tests for `cookies-store` and `cookies-impl` pass.
+- iOS compilation/tests require a valid local Xcode CLI setup.
 
----
+## Runbook
+From Android repo root:
 
-## Research Hypotheses
-
-- The **Cookies module** is a strong candidate for Kotlin Multiplatform because:
-  - It contains deterministic business rules
-  - It has clear boundaries and well-defined responsibilities
-  - Its logic is largely independent of UI concerns
-- Using KMP **as a library** is more suitable for large, modular apps than attempting full cross-platform migration.
-- Cookie handling logic can be shared while preserving:
-  - Platform-specific storage mechanisms
-  - Platform-specific security constraints
-
----
-
-## Technical Scope
-
-### In scope
-- Cookie models and domain logic
-- Cookie policies and rules
-- Shared abstractions for reading/writing cookies
-- Platform-specific adapters (Android / iOS)
-
-### Out of scope
-- UI layers
-- Browser rendering engines
-- Full application refactoring
-- Performance optimization beyond academic validation
-
----
-
-## Target Repositories (Reference Implementations)
-
-- **Android:** DuckDuckGo Android  
-  https://github.com/duckduckgo/android
-
-- **iOS/macOS:** DuckDuckGo Apple Browsers  
-  https://github.com/duckduckgo/apple-browsers
-
-These repositories are used **only as reference and integration targets**.
-
----
-
-## Planned Architecture
-
-```text
-Cookies-KMP
-│
-├── shared/
-│   ├── commonMain/        # Shared cookie domain logic
-│   ├── androidMain/       # Android-specific implementations
-│   └── iosMain/           # iOS-specific implementations
-│
-├── docs/
-│   ├── decisions.md       # Architectural and research decisions
-│   ├── limitations.md    # Technical and platform constraints
-│   └── integration.md    # How the library is consumed
-
+```bash
+./gradlew :cookies-store:testDebugUnitTest :cookies-impl:testDebugUnitTest
+./gradlew :cookies-kmp:cookies-kmp-core:testDebugUnitTest
 ```
 
----
+## Main risks
+- iOS adapter parity for platform-specific cookie behavior.
+- Continued AGP/Kotlin MPP version compatibility drift.
+- Keeping Android behavior exactly stable during incremental migration.
 
-## Validation Criteria
-
-- The shared KMP library can be built successfully
-- Android can import and use the Cookies KMP module
-- iOS can import and use the same module via a published artifact
-- Cookie-related logic behaves consistently across platforms
-
----
-
-## Project Status
-
-🚧 **Work in progress**
-
-This repository will evolve alongside the thesis, including documentation, experiments, and integration notes.
-
----
-
-## License & Usage
-
-This repository exists for **academic research purposes only**.
-
-- DuckDuckGo source code remains under its original licenses
-- This project does not redistribute or modify proprietary components
-- All usage complies with the open-source licensing terms of the upstream repositories
->>>>>>> 552253b106ec5a1c779fce2265a2abce9f1fb606
+See also:
+- `BUSINESS_CASE.md`
+- `CODEX_CONTEXT.md`
+- `CODEX_WORKPLAN.md`
