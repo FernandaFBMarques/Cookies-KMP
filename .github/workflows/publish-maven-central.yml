@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version in shared/build.gradle.kts (e.g. 0.1.0 or 0.1.0-SNAPSHOT)"
+        description: "Release version in shared/build.gradle.kts (e.g. 0.1.0)"
         required: true
         type: string
 
@@ -105,20 +105,18 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_ENV"
 
-      - name: Choose publish task
-        id: choose-task
+      - name: Validate release version format
         run: |
           set -euo pipefail
           VERSION="${{ github.event.inputs.version }}"
           if [[ "${VERSION}" == *"-SNAPSHOT" ]]; then
-            echo "task=:cookies-kmp-core:publishToMavenCentral" >> "$GITHUB_OUTPUT"
-          else
-            echo "task=:cookies-kmp-core:publishAndReleaseToMavenCentral" >> "$GITHUB_OUTPUT"
+            echo "Central Portal does not support SNAPSHOT versions."
+            echo "Set a release version in shared/build.gradle.kts (e.g. 0.1.0) and run again."
+            exit 1
           fi
-          echo "Selected task: $(cat "$GITHUB_OUTPUT")"
 
       - name: Publish and release
-        run: ./gradlew "${{ steps.choose-task.outputs.task }}" --no-daemon --stacktrace --info
+        run: ./gradlew :cookies-kmp-core:publishAndReleaseToMavenCentral --no-daemon --stacktrace --info
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}

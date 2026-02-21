@@ -12,7 +12,7 @@ kotlin {
     jvmToolchain(17)
 
     androidTarget {
-        publishLibraryVariants("debug", "release")
+        publishLibraryVariants("release")
     }
 
     iosX64()
