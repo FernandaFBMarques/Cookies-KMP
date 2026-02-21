@@ -47,20 +47,55 @@ jobs:
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
         run: |
           set -euo pipefail
           missing=0
-          for name in MAVEN_CENTRAL_USERNAME MAVEN_CENTRAL_PASSWORD SIGNING_KEY_ID SIGNING_KEY_PASSWORD SIGNING_KEY; do
+          for name in MAVEN_CENTRAL_USERNAME MAVEN_CENTRAL_PASSWORD SIGNING_KEY_ID SIGNING_KEY; do
             if [ -z "${!name:-}" ]; then
               echo "Missing secret: ${name}"
               missing=1
             fi
           done
+          if [ -z "${SIGNING_KEY_PASSWORD:-}" ] && [ -z "${SIGNING_PASSWORD:-}" ]; then
+            echo "Missing secret: SIGNING_KEY_PASSWORD (or SIGNING_PASSWORD)"
+            missing=1
+          fi
           if [ "${missing}" -ne 0 ]; then
             exit 1
           fi
           echo "All required secrets are present."
+
+      - name: Normalize signing key material
+        env:
+          RAW_SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        run: |
+          set -euo pipefail
+          KEY="${RAW_SIGNING_KEY}"
+
+          # If the key was pasted with escaped newlines, convert them.
+          if echo "${KEY}" | grep -q "\\\\n"; then
+            KEY="$(printf '%b' "${KEY}")"
+          fi
+
+          # If not already armored, try base64 decode.
+          if ! echo "${KEY}" | grep -q "BEGIN PGP PRIVATE KEY BLOCK"; then
+            if DECODED="$(echo "${KEY}" | base64 -d 2>/dev/null)"; then
+              KEY="${DECODED}"
+            fi
+          fi
+
+          if ! echo "${KEY}" | grep -q "BEGIN PGP PRIVATE KEY BLOCK"; then
+            echo "SIGNING_KEY is not a valid ASCII-armored private key (or decodable base64 of it)."
+            exit 1
+          fi
+
+          {
+            echo "ORG_GRADLE_PROJECT_signingInMemoryKey<<EOF"
+            echo "${KEY}"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
 
       - name: Choose publish task
         id: choose-task
@@ -80,5 +115,4 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_KEY_PASSWORD || secrets.SIGNING_PASSWORD }}
