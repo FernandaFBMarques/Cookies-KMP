@@ -5,8 +5,8 @@ plugins {
     id("com.vanniktech.maven.publish") version "0.30.0"
 }
 
-group = "com.duckduckgo.cookies"
-version = "0.1.0"
+group = "io.github.fernandafbmarques"
+version = "0.1.1"
 
 kotlin {
     jvmToolchain(17)
@@ -56,7 +56,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.duckduckgo.cookies.kmp.core"
+    namespace = "io.github.fernandafbmarques.cookies.kmp.core"
     compileSdk = 35
 
     defaultConfig {
@@ -74,7 +74,7 @@ mavenPublishing {
     signAllPublications()
 
     coordinates(
-        groupId = "com.duckduckgo.cookies",
+        groupId = "io.github.fernandafbmarques",
         artifactId = "cookies-kmp-core",
         version = version.toString(),
     )

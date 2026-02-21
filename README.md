@@ -33,7 +33,7 @@ If policy and feature logic are shared once in KMP and only platform adapters st
 
 ## Integration model
 This KMP project is included from the Android repo as a composite build and consumed as:
-- `com.duckduckgo.cookies:cookies-kmp-core:0.1.0-SNAPSHOT`
+- `io.github.fernandafbmarques:cookies-kmp-core:0.1.1`
 
 ## Local composite build setup (DDG Android)
 The DuckDuckGo Android repo consumes this project from source via Gradle composite build.
@@ -42,15 +42,15 @@ Add to `duckduckgo/Android/settings.gradle`:
 ```groovy
 includeBuild("/Users/mariafernandafreitasbarbosamarques/IdeaProjects/CookiesKMP") {
     dependencySubstitution {
-        substitute(module("com.duckduckgo.cookies:cookies-kmp-core"))
-            .using(project(":shared"))
+        substitute(module("io.github.fernandafbmarques:cookies-kmp-core"))
+            .using(project(":cookies-kmp-core"))
     }
 }
 ```
 
 Then add in `cookies/cookies-impl` and `cookies/cookies-store`:
 ```groovy
-implementation "com.duckduckgo.cookies:cookies-kmp-core:0.1.0-SNAPSHOT"
+implementation "io.github.fernandafbmarques:cookies-kmp-core:0.1.1"
 ```
 
 ## Maven Central publishing plan

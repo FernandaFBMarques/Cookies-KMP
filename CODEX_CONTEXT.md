@@ -28,12 +28,12 @@ The DDG Android repo consumes this project via Gradle composite build with depen
 ```groovy
 includeBuild("/Users/mariafernandafreitasbarbosamarques/IdeaProjects/CookiesKMP") {
     dependencySubstitution {
-        substitute(module("com.duckduckgo.cookies:cookies-kmp-core"))
-            .using(project(":shared"))
+        substitute(module("io.github.fernandafbmarques:cookies-kmp-core"))
+            .using(project(":cookies-kmp-core"))
     }
 }
 ```
-Consumers use `implementation "com.duckduckgo.cookies:cookies-kmp-core:0.1.0-SNAPSHOT"`.
+Consumers use `implementation "io.github.fernandafbmarques:cookies-kmp-core:0.1.1"`.
 
 ## Maven Central publishing plan
 1) Register Sonatype Central account and `groupId` namespace.
