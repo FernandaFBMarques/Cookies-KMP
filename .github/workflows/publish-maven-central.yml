@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version (e.g. 0.1.0). Must match shared/build.gradle.kts"
+        description: "Version in shared/build.gradle.kts (e.g. 0.1.0 or 0.1.0-SNAPSHOT)"
         required: true
         type: string
 
@@ -27,10 +27,55 @@ jobs:
 
       - name: Validate version input
         run: |
-          grep -q "version = \"${{ github.event.inputs.version }}\"" shared/build.gradle.kts
+          set -euo pipefail
+          INPUT_VERSION="${{ github.event.inputs.version }}"
+          BUILD_VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' shared/build.gradle.kts | head -n1)"
+          echo "Input version: ${INPUT_VERSION}"
+          echo "Build file version: ${BUILD_VERSION}"
+          if [ -z "${BUILD_VERSION}" ]; then
+            echo "Could not read version from shared/build.gradle.kts"
+            exit 1
+          fi
+          if [ "${INPUT_VERSION}" != "${BUILD_VERSION}" ]; then
+            echo "Version mismatch. Update shared/build.gradle.kts or run with matching input."
+            exit 1
+          fi
+
+      - name: Validate required secrets exist
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in MAVEN_CENTRAL_USERNAME MAVEN_CENTRAL_PASSWORD SIGNING_KEY_ID SIGNING_KEY_PASSWORD SIGNING_KEY; do
+            if [ -z "${!name:-}" ]; then
+              echo "Missing secret: ${name}"
+              missing=1
+            fi
+          done
+          if [ "${missing}" -ne 0 ]; then
+            exit 1
+          fi
+          echo "All required secrets are present."
+
+      - name: Choose publish task
+        id: choose-task
+        run: |
+          set -euo pipefail
+          VERSION="${{ github.event.inputs.version }}"
+          if [[ "${VERSION}" == *"-SNAPSHOT" ]]; then
+            echo "task=:cookies-kmp-core:publishToMavenCentral" >> "$GITHUB_OUTPUT"
+          else
+            echo "task=:cookies-kmp-core:publishAndReleaseToMavenCentral" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Selected task: $(cat "$GITHUB_OUTPUT")"
 
       - name: Publish and release
-        run: ./gradlew :cookies-kmp-core:publishAndReleaseToMavenCentral --no-daemon --stacktrace
+        run: ./gradlew "${{ steps.choose-task.outputs.task }}" --no-daemon --stacktrace --info
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
