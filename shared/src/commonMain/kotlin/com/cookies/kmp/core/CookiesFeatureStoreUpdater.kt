@@ -1,7 +1,6 @@
 package com.cookies.kmp.core
 
 import kotlinx.serialization.json.Json
-import kotlin.text.insert
 
 class CookiesFeatureStoreUpdater(
     private val settingsRepository: CookiesSettingsRepository,
