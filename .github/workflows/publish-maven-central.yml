@@ -45,14 +45,13 @@ jobs:
         env:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
         run: |
           set -euo pipefail
           missing=0
-          for name in MAVEN_CENTRAL_USERNAME MAVEN_CENTRAL_PASSWORD SIGNING_KEY_ID SIGNING_KEY; do
+          for name in MAVEN_CENTRAL_USERNAME MAVEN_CENTRAL_PASSWORD SIGNING_KEY; do
             if [ -z "${!name:-}" ]; then
               echo "Missing secret: ${name}"
               missing=1
@@ -79,14 +78,23 @@ jobs:
             KEY="$(printf '%b' "${KEY}")"
           fi
 
-          # If not already armored, try base64 decode.
-          if ! echo "${KEY}" | grep -q "BEGIN PGP PRIVATE KEY BLOCK"; then
-            if DECODED="$(echo "${KEY}" | base64 -d 2>/dev/null)"; then
-              KEY="${DECODED}"
+          # Remove accidental wrapping quotes and CRLF.
+          KEY="${KEY%\"}"
+          KEY="${KEY#\"}"
+          KEY="$(printf '%s' "${KEY}" | tr -d '\r')"
+
+          # If not already armored, try base64 decode into a temp file to avoid null-byte issues.
+          if ! printf '%s' "${KEY}" | grep -q "BEGIN PGP PRIVATE KEY BLOCK"; then
+            tmp_decoded="$(mktemp)"
+            if printf '%s' "${KEY}" | base64 -d > "${tmp_decoded}" 2>/dev/null; then
+              if grep -q "BEGIN PGP PRIVATE KEY BLOCK" "${tmp_decoded}"; then
+                KEY="$(cat "${tmp_decoded}")"
+              fi
             fi
+            rm -f "${tmp_decoded}"
           fi
 
-          if ! echo "${KEY}" | grep -q "BEGIN PGP PRIVATE KEY BLOCK"; then
+          if ! printf '%s' "${KEY}" | grep -q "BEGIN PGP PRIVATE KEY BLOCK"; then
             echo "SIGNING_KEY is not a valid ASCII-armored private key (or decodable base64 of it)."
             exit 1
           fi
@@ -114,5 +122,4 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_KEY_PASSWORD || secrets.SIGNING_PASSWORD }}
