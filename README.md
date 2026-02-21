@@ -35,6 +35,32 @@ If policy and feature logic are shared once in KMP and only platform adapters st
 This KMP project is included from the Android repo as a composite build and consumed as:
 - `com.duckduckgo.cookies:cookies-kmp-core:0.1.0-SNAPSHOT`
 
+## Local composite build setup (DDG Android)
+The DuckDuckGo Android repo consumes this project from source via Gradle composite build.
+
+Add to `duckduckgo/Android/settings.gradle`:
+```groovy
+includeBuild("/Users/mariafernandafreitasbarbosamarques/IdeaProjects/CookiesKMP") {
+    dependencySubstitution {
+        substitute(module("com.duckduckgo.cookies:cookies-kmp-core"))
+            .using(project(":shared"))
+    }
+}
+```
+
+Then add in `cookies/cookies-impl` and `cookies/cookies-store`:
+```groovy
+implementation "com.duckduckgo.cookies:cookies-kmp-core:0.1.0-SNAPSHOT"
+```
+
+## Maven Central publishing plan
+High-level steps to publish this library publicly:
+1) Register a Sonatype Central account and a namespace for the chosen `groupId`.
+2) Create a GPG signing key for release artifacts.
+3) Configure Gradle `maven-publish` and `signing` with `group`, `artifactId`, and `version`.
+4) Publish with `./gradlew publishAllPublicationsToMavenCentralRepository`.
+5) Release the staging repository in the Sonatype Central Portal.
+
 ## Current status
 - KMP core created and wired to Android cookies modules.
 - Android wrappers now delegate selected business logic to KMP core.

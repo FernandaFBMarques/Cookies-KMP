@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     kotlin("plugin.serialization")
-    id("maven-publish")
+    id("com.vanniktech.maven.publish") version "0.30.0"
 }
 
 group = "com.duckduckgo.cookies"
@@ -66,5 +66,43 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+mavenPublishing {
+    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+
+    coordinates(
+        groupId = "com.duckduckgo.cookies",
+        artifactId = "cookies-kmp-core",
+        version = version.toString(),
+    )
+
+    pom {
+        name.set("Cookies KMP Core")
+        description.set("Kotlin Multiplatform shared cookies business logic.")
+        url.set("https://github.com/FernandaFBMarques/Cookies-KMP")
+
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://opensource.org/license/mit/")
+            }
+        }
+
+        developers {
+            developer {
+                id.set("FernandaFBMarques")
+                name.set("Maria Fernanda de Freitas Barbosa Marques")
+                url.set("https://github.com/FernandaFBMarques")
+            }
+        }
+
+        scm {
+            connection.set("scm:git:git://github.com/FernandaFBMarques/Cookies-KMP.git")
+            developerConnection.set("scm:git:ssh://git@github.com/FernandaFBMarques/Cookies-KMP.git")
+            url.set("https://github.com/FernandaFBMarques/Cookies-KMP")
+        }
     }
 }

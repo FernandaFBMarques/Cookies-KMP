@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 }
 
 include(":cookies-kmp-core")
+project(":cookies-kmp-core").projectDir = file("shared")

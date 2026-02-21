@@ -23,6 +23,25 @@ Single-source policy logic, native platform execution.
 - `CookiesContentScopeConfigPlugin` uses KMP formatter.
 - `CookiesFeatureNameUtil.redactStacktraceInBase64` delegates to KMP.
 
+## Local composite build (DDG Android)
+The DDG Android repo consumes this project via Gradle composite build with dependency substitution:
+```groovy
+includeBuild("/Users/mariafernandafreitasbarbosamarques/IdeaProjects/CookiesKMP") {
+    dependencySubstitution {
+        substitute(module("com.duckduckgo.cookies:cookies-kmp-core"))
+            .using(project(":shared"))
+    }
+}
+```
+Consumers use `implementation "com.duckduckgo.cookies:cookies-kmp-core:0.1.0-SNAPSHOT"`.
+
+## Maven Central publishing plan
+1) Register Sonatype Central account and `groupId` namespace.
+2) Create a GPG signing key for release artifacts.
+3) Configure Gradle `maven-publish` and `signing` with coordinates.
+4) Publish with `./gradlew publishAllPublicationsToMavenCentralRepository`.
+5) Release in Sonatype Central Portal.
+
 ## What still needs platform work
 - iOS concrete adapters for cookie persistence and cookie API integration.
 - iOS parity test suite and cross-platform contract verification.
