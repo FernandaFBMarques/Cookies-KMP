@@ -61,11 +61,24 @@ High-level steps to publish this library publicly:
 4) Publish with `./gradlew publishAllPublicationsToMavenCentralRepository`.
 5) Release the staging repository in the Sonatype Central Portal.
 
+## Publishing status (completed)
+- Namespace ownership issue was resolved by moving coordinates from `com.duckduckgo.cookies` to `io.github.fernandafbmarques`.
+- Publishing is configured for Sonatype Central Portal using `com.vanniktech.maven.publish`.
+- Artifact signing is configured via in-memory PGP keys in GitHub Actions.
+- Release `io.github.fernandafbmarques:cookies-kmp-core:0.1.1` was successfully deployed to Maven Central.
+- Release workflow is release-only (`-SNAPSHOT` versions are rejected by Central Portal and blocked in CI).
+
 ## Current status
 - KMP core created and wired to Android cookies modules.
 - Android wrappers now delegate selected business logic to KMP core.
 - Android unit tests for `cookies-store` and `cookies-impl` pass.
 - iOS compilation/tests require a valid local Xcode CLI setup.
+
+## Next steps
+1) Bump project version for the next release cycle (for example `0.1.2`) and maintain release notes per tag.
+2) Add iOS concrete adapters and parity tests against Android expected outputs.
+3) Add a small consumer smoke test project that resolves `io.github.fernandafbmarques:cookies-kmp-core` from Maven Central.
+4) Continue replacing duplicated host-app logic with shared KMP calls, removing wrappers only after parity confirmation.
 
 ## Runbook
 From Android repo root:

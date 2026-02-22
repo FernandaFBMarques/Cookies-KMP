@@ -42,6 +42,17 @@ Consumers use `implementation "io.github.fernandafbmarques:cookies-kmp-core:0.1.
 4) Publish with `./gradlew publishAllPublicationsToMavenCentralRepository`.
 5) Release in Sonatype Central Portal.
 
+## Maven Central status
+- Completed: Central publishing pipeline is active through GitHub Actions.
+- Completed: coordinates migrated to owned namespace `io.github.fernandafbmarques`.
+- Completed: released artifact `io.github.fernandafbmarques:cookies-kmp-core:0.1.1`.
+- Constraint: Central Portal does not support `-SNAPSHOT`; workflow enforces release versions only.
+
+## Near-term release plan
+1) Prepare `0.1.2` after iOS parity-related work lands.
+2) Keep POM metadata/signing unchanged unless namespace/ownership changes.
+3) Add basic dependency-consumption verification after each release.
+
 ## What still needs platform work
 - iOS concrete adapters for cookie persistence and cookie API integration.
 - iOS parity test suite and cross-platform contract verification.

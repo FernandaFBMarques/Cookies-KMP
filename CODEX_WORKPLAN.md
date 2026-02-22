@@ -3,6 +3,11 @@
 ## Objective
 Complete cookies feature extraction by maximizing shared business logic and minimizing platform-specific duplication.
 
+## Current progress snapshot
+- Completed: KMP core extracted and integrated with Android wrappers.
+- Completed: Maven Central release pipeline established and `0.1.1` published.
+- In progress: iOS adapter implementation and cross-platform parity hardening.
+
 ## Phase 1: Stabilize shared core
 - Keep shared models and decision logic complete and tested.
 - Ensure no Android-only imports leak into `commonMain`.
@@ -32,11 +37,16 @@ Complete cookies feature extraction by maximizing shared business logic and mini
 - Remove dead duplicate code only after parity confirmation.
 
 ## Acceptance checklist
-- [ ] Shared core covers all targeted business logic.
-- [ ] Android integration path is stable and tested.
+- [x] Shared core covers all targeted business logic.
+- [x] Android integration path is stable and tested.
 - [ ] iOS adapters exist and compile in a configured Xcode environment.
 - [ ] Cross-platform decision parity is demonstrated with tests.
-- [ ] Migration notes and maintenance guidelines are documented.
+- [x] Migration notes and maintenance guidelines are documented.
+
+## Upcoming milestones
+1) Finish iOS adapters and parity tests.
+2) Validate one additional policy/config change shipped via shared core.
+3) Release next public version (`0.1.2`) after parity checkpoints.
 
 ## Commands (Android repo root)
 ```bash

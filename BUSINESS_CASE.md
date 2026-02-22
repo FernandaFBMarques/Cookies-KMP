@@ -44,7 +44,13 @@ Track before/after for:
 - amount of duplicated cookies logic (LOC or module surface),
 - test pass rates for shared and adapter suites.
 
+## Progress update
+- Shared KMP core is implemented and integrated into Android-side wrappers.
+- Public distribution channel is now active via Maven Central.
+- Initial public release is available as `io.github.fernandafbmarques:cookies-kmp-core:0.1.1`.
+- Remaining value realization depends on iOS adapter parity and cross-platform contract tests.
+
 ## Decision gates
-- Gate 1: Android parity maintained after KMP delegation.
-- Gate 2: iOS adapter implemented with equivalent decision outcomes.
-- Gate 3: at least one real policy update shipped via shared core path.
+- Gate 1: Android parity maintained after KMP delegation. Status: achieved.
+- Gate 2: iOS adapter implemented with equivalent decision outcomes. Status: in progress.
+- Gate 3: at least one real policy update shipped via shared core path. Status: in progress.
