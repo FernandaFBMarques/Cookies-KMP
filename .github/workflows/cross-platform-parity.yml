@@ -1,0 +1,41 @@
+name: Cross Platform Parity
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  shared-and-android-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Run Android-backed unit tests
+        run: ./gradlew :cookies-kmp-core:testDebugUnitTest --no-daemon --stacktrace
+
+  apple-framework-build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build and zip Apple XCFramework
+        run: ./scripts/build_apple_xcframework.sh
+
+      - name: Compute Swift Package checksum
+        run: ./scripts/compute_spm_checksum.sh

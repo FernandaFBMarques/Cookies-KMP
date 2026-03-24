@@ -28,7 +28,9 @@ If policy and feature logic are shared once in KMP and only platform adapters st
 ## Current structure
 - `cookies-kmp-core/src/commonMain`: shared cookies domain logic.
 - `cookies-kmp-core/src/androidMain`: Android actuals/adapters.
-- `cookies-kmp-core/src/iosMain`: iOS actual placeholders/adapters.
+- `cookies-kmp-core/src/appleMain`: shared Apple adapters/contracts.
+- `cookies-kmp-core/src/iosMain`: iOS adapters.
+- `cookies-kmp-core/src/macosMain`: macOS adapters.
 - `cookies-kmp-core/src/commonTest`: shared logic tests.
 
 ## Integration model
@@ -88,6 +90,15 @@ From Android repo root:
 ./gradlew :cookies-kmp:cookies-kmp-core:testDebugUnitTest
 ```
 
+From this KMP repo root (Apple packaging):
+
+```bash
+./scripts/build_apple_xcframework.sh
+./scripts/compute_spm_checksum.sh
+# then update the Apple package manifest for a release tag:
+./scripts/update_spm_manifest.sh 0.1.2 <checksum>
+```
+
 ## Main risks
 - iOS adapter parity for platform-specific cookie behavior.
 - Continued AGP/Kotlin MPP version compatibility drift.
@@ -97,3 +108,5 @@ See also:
 - `BUSINESS_CASE.md`
 - `CODEX_CONTEXT.md`
 - `CODEX_WORKPLAN.md`
+- `KMP_UNIFIED_ROADMAP.md`
+- `apple-spm/CookiesKMP/Package.swift`

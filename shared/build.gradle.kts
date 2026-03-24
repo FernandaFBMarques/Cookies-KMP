@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.github.fernandafbmarques"
-version = "0.1.3"
+version = "0.1.4"
 
 kotlin {
     jvmToolchain(17)
