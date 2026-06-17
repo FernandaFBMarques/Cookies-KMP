@@ -1,0 +1,26 @@
+title: Cookies KMP Reference
+description: Reference documentation for the Cookies KMP proof of concept and Android/Apple integrations.
+
+remote_theme: just-the-docs/just-the-docs
+
+baseurl: /Cookies-KMP
+
+color_scheme: dark
+
+search_enabled: true
+heading_anchors: true
+
+footer_content: "Cookies KMP proof-of-concept documentation."
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+  - jekyll-include-cache
+  - jekyll-feed
+  - jekyll-relative-links
