@@ -10,6 +10,8 @@ This page documents the proof-of-concept migration of deterministic cookies logi
 
 The goal is to provide a reference that can be cited alongside the project report: what was built, why the architecture is split this way, which commits belong to each repository, and how the implementation was validated.
 
+Portuguese version: [Referência da Integração Cookies KMP](./pt-br/).
+
 ## Repositories
 
 | Repository | Role | Main branch used in this work |

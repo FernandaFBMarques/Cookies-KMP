@@ -5,12 +5,16 @@ remote_theme: just-the-docs/just-the-docs
 
 baseurl: /Cookies-KMP
 
-color_scheme: dark
+color_scheme: cookies
 
 search_enabled: true
 heading_anchors: true
 
 footer_content: "Cookies KMP proof-of-concept documentation."
+
+aux_links:
+  "Português (Brasil)":
+    - "/Cookies-KMP/pt-br/"
 
 defaults:
   - scope:
