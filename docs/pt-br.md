@@ -292,34 +292,3 @@ A KMP não substitui infraestrutura nativa. Ela não assume:
 Ela assume apenas regras portáveis e determinísticas.
 
 Por isso, vários arquivos nativos continuam existindo depois da migração. Eles são adapters, repositórios ou pontos de integração de plataforma. O objetivo não é transformar o app inteiro em código compartilhado. O objetivo é ter uma fonte única para decisões de política de cookies.
-
-## Como Publicar Com GitHub Pages
-
-Este repositório possui uma pasta `/docs` configurada para Jekyll com o tema `just-the-docs`.
-
-Para testar localmente:
-
-```bash
-cd docs
-docker-compose up
-```
-
-Depois acesse:
-
-```text
-http://127.0.0.1:4000
-```
-
-Para publicar:
-
-1. Abra as configurações do repositório [FernandaFBMarques/Cookies-KMP](https://github.com/FernandaFBMarques/Cookies-KMP).
-2. Vá em **Pages**.
-3. Selecione a branch `main`.
-4. Selecione a pasta `/docs`.
-5. Salve.
-
-URL esperada:
-
-```text
-https://fernandafbmarques.github.io/Cookies-KMP/
-```

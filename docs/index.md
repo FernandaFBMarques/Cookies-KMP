@@ -301,34 +301,3 @@ It does not own:
 It owns only the rules that are deterministic and portable.
 
 This is why many host files still exist after the migration. They are adapters, repositories, or native platform integration points. The desired end state is not a fully shared app. The desired end state is a shared source of truth for cookies policy decisions.
-
-## How To Publish This Documentation With GitHub Pages
-
-This repository includes a `/docs` directory configured for Jekyll using the `just-the-docs` theme.
-
-To preview locally:
-
-```bash
-cd docs
-docker-compose up
-```
-
-Then open:
-
-```text
-http://127.0.0.1:4000
-```
-
-To publish on GitHub Pages:
-
-1. Open the repository settings for [FernandaFBMarques/Cookies-KMP](https://github.com/FernandaFBMarques/Cookies-KMP).
-2. Go to **Pages**.
-3. Select the `main` branch.
-4. Select the `/docs` folder as the source.
-5. Save.
-
-The page should become available at:
-
-```text
-https://fernandafbmarques.github.io/Cookies-KMP/
-```
