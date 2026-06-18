@@ -145,7 +145,22 @@ Depois da mudança:
 - A KMP executa o matching determinístico.
 - Android retorna `hasExcludedCookieName` a partir do resultado da KMP.
 
-O módulo `cookies-store` recebe apenas a dependência nesta etapa. Armazenamento e repositórios continuam nativos por decisão arquitetural.
+### [`4b3dbe444`](https://github.com/FernandaFBMarques/Android/commit/4b3dbe444) - Limpar dependências do cookies-store
+
+Este commit finaliza a fronteira de módulos no Android para a fatia de cookies.
+
+Arquivo alterado:
+
+- `cookies/cookies-store/build.gradle`
+
+Depois da mudança:
+
+- `cookies-store` não depende mais de `cookies-kmp-core`.
+- `cookies-store` continua sendo um módulo nativo Android de storage e infraestrutura.
+- `cookies-store` passa a incluir a dependência `AndroidX.room.ktx`, necessária para suporte nativo ao Room.
+- O consumo da lógica de negócio da KMP permanece apenas em `cookies-impl`.
+
+Essa limpeza faz o grafo de dependências refletir a arquitetura: decisões compartilhadas de cookies ficam na camada adapter, enquanto armazenamento permanece nativo.
 
 ## Commits da Integração Apple
 
