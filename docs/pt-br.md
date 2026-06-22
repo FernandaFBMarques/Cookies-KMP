@@ -226,6 +226,21 @@ Depois da mudança:
 - macOS converte domínios nativos para a forma esperada pelo matcher compartilhado.
 - KMP executa a decisão final de matching.
 
+### [`da812285be`](https://github.com/FernandaFBMarques/apple-browsers/commit/da812285beb728834c0b52323619d74e9ea5b97d) - Encaminhar a formatação Apple pela fachada KMP
+
+Essa limpeza arquitetural atualiza `ContentScopePrivacyConfigurationJSONGenerator` para acessar a formatação compartilhada por meio da fachada pública destinada aos hosts, em vez de chamar `CookiesContentScopeConfigFormatter` diretamente.
+
+Arquivo alterado:
+
+- `SharedPackages/BrowserServicesKit/Sources/BrowserServicesKit/ContentScopeScript/ContentScopePrivacyConfigurationJSONGenerator.swift`
+
+Depois da mudança:
+
+- Apple continua responsável por carregar, filtrar, serializar e aplicar a privacy configuration nativa.
+- Apple converte o JSON serializado para `ConfigFormattingInput`.
+- `CookiesHostParityFacade.formatConfig(...)` delega a formatação para `CookiesPolicyEngine` e o formatter compartilhado.
+- O comportamento do JSON gerado permanece inalterado, enquanto o host Apple passa a respeitar a mesma fronteira pública KMP usada pelas demais integrações.
+
 ## Testes e Validação
 
 ### Biblioteca KMP

@@ -233,6 +233,21 @@ Responsibilities after the change:
 
 The macOS adapter preserves the previous eTLD+1 behavior for subdomain cookies while delegating the final match to KMP.
 
+### [`da812285be`](https://github.com/FernandaFBMarques/apple-browsers/commit/da812285beb728834c0b52323619d74e9ea5b97d) - Route Apple cookies config formatting through the KMP facade
+
+This architectural cleanup updates `ContentScopePrivacyConfigurationJSONGenerator` to access shared config formatting through the stable host-facing facade instead of calling `CookiesContentScopeConfigFormatter` directly.
+
+Changed file:
+
+- `SharedPackages/BrowserServicesKit/Sources/BrowserServicesKit/ContentScopeScript/ContentScopePrivacyConfigurationJSONGenerator.swift`
+
+Responsibilities after the change:
+
+- Apple still loads, filters, serializes, and applies the native privacy configuration.
+- Apple maps the serialized JSON into `ConfigFormattingInput`.
+- `CookiesHostParityFacade.formatConfig(...)` delegates formatting to `CookiesPolicyEngine` and the shared formatter.
+- The generated JSON behavior remains unchanged while the Apple host follows the same public KMP boundary used by the other integrations.
+
 ## Testing And Validation
 
 ### KMP library tests
